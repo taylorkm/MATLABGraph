@@ -8,6 +8,8 @@ classdef Graph < handle
     
     properties(Constant, GetAccess = private)
         maxNVec = 10;
+        K = 3;
+        sigma = 2;
     end
 
     properties
@@ -44,7 +46,7 @@ classdef Graph < handle
                     error('Unrecognized graph');
                 end
             elseif ismatrix(varargin{1})
-                disp('Executing Graph constructor on dataset')
+                g.makeGraphFromData(varargin{1})
             else
                 error('Unrecognized initialization')
             end
@@ -53,6 +55,7 @@ classdef Graph < handle
             g.initArrays();
             
         end
+        
         
         % Compute the graph-related matrices.
         function initArrays(g)
@@ -65,7 +68,23 @@ classdef Graph < handle
                 min(g.maxNVec,g.N-1));
             g.spectrum = diag(g.spectrum);
         end
-                      
+        
+        
+        % Make a graph from a set of data points in R^d. The input data is
+        % assumed to be a n-by-d matrix.  Is there a smarter, but still
+        % easy, way to symmetrize?
+        function makeGraphFromData(g,data)
+            g.N = size(data, 1);
+            g.data = data;
+            [j, dist] = knnsearch(data, data, 'K', g.K);
+            i = repmat(1:g.N, g.K ,1)';
+            dist = exp(- dist.^2 / g.sigma);
+            g.weightMatrix = sparse(i(:), j(:), dist(:), g.N, g.N); 
+            g.weightMatrix = g.weightMatrix + sparse(j(:), i(:), dist(:), g.N, g.N);
+            g.weightMatrix = g.weightMatrix / 2;         
+        end
+                
+        
         % Create a slow graph. Function is written to compute weight
         % matrices using sparse matrices... faster than actually
         % computing distances.
@@ -90,12 +109,14 @@ classdef Graph < handle
             g.weightMatrix = sparse(idx(:,1),idx(:,2),1);
         end
         
+        
         % Create a fast graph. Function is written to compute weight
         % matrices using sparse matrices... faster than actually
         % computing distances.
         function makeFastGraph(graphObj, N, p)
             disp('Making fast graph');
         end
+        
         
         % For visualizing the harmonics as a function of the vertex index.
         function showHarmonics(g,a,d)
@@ -118,9 +139,8 @@ classdef Graph < handle
             end
         end
         
-        % Overloaded functions
-        function plotData(g)
-            % Plot the graphs data points.
+        % Plot the graphs data points in ambient space, if applicable.
+        function plotData(g)            
             if size(g.data,2)>=3
                 figure
                 plot(g.data(:,1), g.data(:,2), g.data(:,3), 'ko-')
@@ -131,6 +151,21 @@ classdef Graph < handle
                 plot(g.data)
             end
         end
+        
+        % Plot the embedding of the vertices
+        function showEmbedding(g)
+            if size(g.data,2)>=3
+                figure
+                plot3(g.harmonics(:,2), g.harmonics(:,3), g.harmonics(:,4), 'o')
+            elseif size(g.data,2) == 2
+                figure
+                plot(g.harmonics(:,2), g.harmonics(:,3), 'o')
+            else
+                plot(g.data)
+            end           
+        end
+        
+        
         
         function imagesc(g)
             figure
