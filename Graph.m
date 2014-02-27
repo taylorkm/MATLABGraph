@@ -8,7 +8,7 @@ classdef Graph < handle
     
     properties(Constant, GetAccess = private)
         maxNVec = 10;
-        K = 3;
+        K = 8;
         sigma = 2;
     end
 
@@ -126,7 +126,9 @@ classdef Graph < handle
             if nargin < 3 || isempty(d)
                 d = 1;
             end
-            figure
+            ss = get(0,'ScreenSize');
+            figure('position', [ss(3)/4,1,ss(3)/2,ss(4)])
+            
             nVecs = g.maxNVec;
             steps = a:d:nVecs;
             cnt = 1;

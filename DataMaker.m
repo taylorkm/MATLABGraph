@@ -1,9 +1,9 @@
 classdef DataMaker
 
     
-    methods
+    methods(Static)
         % Create a circle in 2-dimensions.
-        function data = Circle2D(dm, a, n)
+        function data = Circle2D(a, n)
             if nargin < 1 || isempty (a)
                 a = 1;
             end
@@ -20,6 +20,25 @@ classdef DataMaker
         % Create a torus
         
         % Create a swiss-roll
+        
+        
+        % Create cluster data in the plane
+        function x = ClustersIn2D(n, k)
+            % n is the number of points
+            % k is the number of clusters k<=n            
+            nPerCluster = floor(n/k)*ones(1,k);
+            nPerCluster(1:mod(n,k)) = nPerCluster(1:mod(n,k))+1;            
+            x = zeros(n,2);            
+            idx0 = 1;
+            for j = 1:k
+                o = randn(1,2); % random location for center
+                x(idx0:idx0+nPerCluster(j)-1,:) = ...
+                    bsxfun(@plus,o,0.1* randn(nPerCluster(j), 2));
+                idx0 = idx0 + nPerCluster(j);
+            end
+            
+            
+        end
         
         
     end
