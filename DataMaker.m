@@ -25,7 +25,8 @@ classdef DataMaker
         % Create cluster data in the plane
         function x = ClustersIn2D(n, k)
             % n is the number of points
-            % k is the number of clusters k<=n            
+            % k is the number of clusters k<=n     
+            rng(10);
             nPerCluster = floor(n/k)*ones(1,k);
             nPerCluster(1:mod(n,k)) = nPerCluster(1:mod(n,k))+1;            
             x = zeros(n,2);            
@@ -33,7 +34,7 @@ classdef DataMaker
             for j = 1:k
                 o = randn(1,2); % random location for center
                 x(idx0:idx0+nPerCluster(j)-1,:) = ...
-                    bsxfun(@plus,o,0.1* randn(nPerCluster(j), 2));
+                    bsxfun(@plus,o,0.6* randn(nPerCluster(j), 2));
                 idx0 = idx0 + nPerCluster(j);
             end
             

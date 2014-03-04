@@ -4,7 +4,7 @@ data = DataMaker.ClustersIn2D(n, 3);
 ss = get(0,'Screensize');
 figure('Position',[1, ss(4)*2/3, ss(3),ss(4)*1/3])
 subplot(1,3,1)
-scatter(data(:,1),data(:,2),15)
+scatter(data(:,1),data(:,2),25,'filled')
 
 
 
@@ -23,7 +23,7 @@ end
 
 pause()
 subplot(1,3,3)
-scatter(data(:,1),data(:,2),15,x)
+scatter(data(:,1),data(:,2),25,x,'filled')
 
 disp('Spectrum:')
 disp(g.spectrum)
