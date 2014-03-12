@@ -17,6 +17,13 @@ classdef DataMaker
             data = [x;y]';
         end
         
+        % Create regular sphere data
+        function data = Sphere()
+            nonethird = 40;
+            [x,y,z] = sphere(nonethird);     
+            data = [x(:),y(:),z(:)];
+        end
+        
         % Create a torus
         
         % Create a swiss-roll

@@ -6,10 +6,10 @@
 
 classdef Graph < handle 
     
-    properties(Constant, GetAccess = private)
+    properties(GetAccess = private)
         maxNVec = 10;
-        K = 1000;
-        sigma = .1;
+        K;
+        sigma;
     end
 
     properties
@@ -30,7 +30,8 @@ classdef Graph < handle
         %   >> g = Graph('slow', 23, 3);
         %   >> g = Graph('fast', 23, 3);
         %   >> g = Graph('fused', 23, 3);
-        %   >> g = graph(data);
+        %   >> g = Graph(data);
+        %   >> g = Graph(data, knn, sigma);
         function g = Graph(varargin)        
             if (~nargin) % default constructor
                 g.N = 50;
@@ -46,6 +47,16 @@ classdef Graph < handle
                     error('Unrecognized graph');
                 end
             elseif ismatrix(varargin{1})
+                if nargin < 2
+                    g.K = size(varargin{1},1);
+                else
+                    g.K = varargin{2};
+                end
+                if nargin < 3
+                    g.sigma = 1;
+                else
+                    g.sigma = varargin{3};
+                end
                 g.makeGraphFromData(varargin{1})
             else
                 error('Unrecognized initialization')
@@ -117,9 +128,33 @@ classdef Graph < handle
             disp('Making fast graph');
         end
         
+        % For visualizing the harmonics as a color on the data nodes
+        function showHarmonics(g,vs)            
+            figure
+            if nargin < 2
+                vs = 2;
+            end
+            
+            % TODO: Do PCA of data in d-dims (for d>3)
+            for k = vs
+                if size(g.data, 2) == 2
+                    scatter(g.data(:,1),g.data(:,2),20,g.harmonics(:,k),'filled')                
+                elseif size(g.data, 2) == 3
+                    scatter3(g.data(:,1),g.data(:,2),g.data(:,3),20,g.harmonics(:,k),'filled')
+                end
+                title(['Data with color representing harmonic ',num2str(k)])
+            end
+            
+            
+        end
+        
         
         % For visualizing the harmonics as a function of the vertex index.
-        function showHarmonics(g,a,d)
+        function showHarmonicsVsVertex(g,a,d)
+            % INPUT:
+            % a is a scalar representing the first harmonic to plot.
+            % d is a scalar representing a step-size between plotted
+            % harmonics.
             if nargin < 2 || isempty(a)
                 a = 1;
             end

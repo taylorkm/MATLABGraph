@@ -11,9 +11,6 @@ ylabel('y')
 % TODO: Add constructor to Graph, so that we can invoke it as
 % g = Graph(data, 0.1, n); % passing shape parameter and number of neighbors
 
-% Construct graph from sampled data
-% pause()
-
 f = warndlg('The original data is shown', 'Information');
 drawnow     % Necessary to print the message
 waitfor(f);

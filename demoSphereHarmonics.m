@@ -1,5 +1,5 @@
 % create a dataset 
-data = DataMaker.Circle2D(1, 100); % radius 1, 100 samples
+data = DataMaker.Sphere(); %
 
 % Construct graph from sampled data
 g = Graph(data);
@@ -8,5 +8,7 @@ g = Graph(data);
 g.showHarmonicsVsVertex();
 
 % Visualize harmonic value as color on nodes
-g.showHarmonics(5);
+for k = 1:4
+    g.showHarmonics(k);
+end
 
