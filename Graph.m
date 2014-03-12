@@ -8,7 +8,7 @@ classdef Graph < handle
     
     properties(Constant, GetAccess = private)
         maxNVec = 10;
-        K = 500;
+        K = 1000;
         sigma = .1;
     end
 
